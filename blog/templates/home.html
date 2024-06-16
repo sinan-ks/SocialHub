@@ -404,23 +404,28 @@
 
             {% for c in post.post_comments.all %}
             <div class="p-1 ms-2">
-                <div class="p-1 ms-2">
+                <div class="d-flex align-items-start">
                     <div>
                         {% if c.user.profile.profile_pic %}
-                        <img class="profile-xsmall" src="{{ c.user.profile.profile_pic.url }}" alt=""> {{
-                        c.user.username }}
+                        <img class="profile-xsmall" src="{{ c.user.profile.profile_pic.url }}"
+                            alt="{{ c.user.username }}">
                         {% else %}
-                        {{ c.profile }}
+                        <!-- Display a default icon or initials if no profile pic -->
+                        <div class="profile-xsmall profile-default">{{ c.user.username|first }}</div>
                         {% endif %}
                     </div>
-                    <div class="ms-2 m-1 comment form-control rounded-end-0 border-0">
+                    <div class="ms-2 m-1 comment form-control rounded-end-0 border-0 position-relative">
                         <input type="text" name="" value="{{ c.text }}" disabled placeholder="Type your comments..."
                             class="border-0 w-100">
-                        {% if request.user == c.user %}
-                        <div class="dropdown">
+                        <div class="dropdown position-absolute top-0 end-0">
                             <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
                                 id="dropdownMenuButton{{ c.id }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                Actions
+                                <span class="visually-hidden">Actions</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 4.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm0 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm0-4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z" />
+                                </svg>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ c.id }}">
                                 <form action="{% url 'comment-delete' post.id c.id %}" method="post">
@@ -429,7 +434,6 @@
                                 </form>
                             </ul>
                         </div>
-                        {% endif %}
                     </div>
                 </div>
             </div>

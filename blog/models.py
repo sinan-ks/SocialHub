@@ -67,11 +67,10 @@ class Stories(models.Model):
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        # Delete the image from storage if it exists
+        
         if self.post_content:
             self.post_content.delete()
-        elif self.text_content:
-            self.text_content.delete()
+        
         super().delete(*args, **kwargs)
 
 

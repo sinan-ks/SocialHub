@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{%load static%}
+{% load static %}
 <html lang="en">
 
 <head>
@@ -14,179 +14,232 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://kit.fontawesome.com/252a556f38.js" crossorigin="anonymous"></script>
 
-
-    <style>
-      .count-container{
-        position: absolute;
-        padding-left: 500px;
-        padding-top: 30px;
-        font-size: 30px;
-        
-      }
-
-      .list-group{
-        margin-left: -100px;
-      }
-
-    
-
-      #countspace{
-        margin-right: 150px;
-        margin-left: -20px;
-        
-      }
-
-      #countspace2{
-        margin-right: 90px;
-        margin-left: -50px;
-      }
-    
-      #button1{
-        font-size: 13px;
-        margin-top: 30px;
-            
-      }
-
-      .followbtn, .blockbtn{
-        display: inline-block;
-        margin-right: 8px;
-        font-size: 13px;
-        margin-top: 30px;
-      }
-      
-      body{
+  <style>
+    body {
       background: #f2f2f2;
       font-family: 'Open Sans', sans-serif;
     }
-     
-    .profile-small{
-    width:40px;
-    border-radius: 50%;
+
+    nav {
+      background-color: #74EBD5;
+      background-image: linear-gradient(90deg, #74EBD5 0%, #9FACE6 100%);
     }
 
-    nav{
-    background-color: #74EBD5;
-    background-image: linear-gradient(90deg, #74EBD5 0%, #9FACE6 100%);
+    .profile-small {
+      width: 40px;
+      border-radius: 50%;
+    }
 
-   }
-    
-    </style>
+    .count-container {
+      display: flex;
+      justify-content: space-around;
+      padding-top: 30px;
+      font-size: 18px;
+      background-color: #fff;
+      /* Background color for the count container */
+      border-radius: 10px;
+      /* Rounded corners */
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      /* Box shadow for depth */
+    }
+
+    .count-item {
+      text-align: center;
+      padding: 15px 0;
+      /* Padding around each count item */
+      flex: 1;
+      /* Equal width for each count item */
+    }
+
+    .count-number {
+      font-size: 24px;
+      /* Larger font size for count number */
+      font-weight: bold;
+    }
+
+    .count-label {
+      font-size: 14px;
+      color: #777;
+      margin-top: 5px;
+      /* Space between count number and label */
+    }
+
+    .card {
+      width: 100%;
+      max-width: 1255px;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .card-img-top {
+      border-radius: 50%;
+      height: 150px;
+      width: 150px;
+      object-fit: cover;
+    }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .card-text {
+      font-size: 16px;
+      color: #555;
+    }
+
+    .btn {
+      margin-top: 20px;
+    }
+
+    #postbtn {
+      margin-top: 5px;
+    }
+
+    .followbtn,
+    .blockbtn {
+      display: inline-block;
+      margin-right: 10px;
+      font-size: 13px;
+    }
+
+    .count-item {
+      text-align: center;
+    }
+
+    .count-number {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .count-label {
+      font-size: 14px;
+      color: #777;
+    }
+
+    .post-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 10px;
+    }
+
+    .post-item img {
+      width: 100%;
+      height: 350px;
+      /* Set a fixed height */
+      object-fit: cover;
+      /* Ensures the image covers the area without stretching */
+      border-radius: 10px;
+    }
+
+    .modal-content {
+      border-radius: 10px;
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- nav starts -->
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
-      <a class="navbar-brand" href="{%url 'home'%}">
-          <img src="{%static 'images/SocialHub Logo.png'%}" alt="Logo" width="100" height="h-auto"
-          >
+  <!-- nav starts -->
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'home' %}">
+        <img src="{% static 'images/SocialHub Logo.png' %}" alt="Logo" width="100" height="auto">
       </a>
 
       <!-- profile dropdown start -->
       <div id="navbarSupportedContent">
-          
-          <ul style="margin-right: 120px;">
-              
-              <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                      aria-expanded="false">
-                      {%if request.user.profile.profile_pic%}
-                      <img class="profile-small" src="{{request.user.profile.profile_pic.url}}" alt="Avatar">
+        <ul style="margin-right: 120px;">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {% if request.user.profile.profile_pic %}
+              <img class="profile-small" src="{{ request.user.profile.profile_pic.url }}" alt="Avatar">
+              {% else %}
+              <img class="profile-small" src="{% static 'images/profilepic.png' %}" alt="Avatar">
+              {% endif %}
+            </a>
 
-                      {%else%}
-                      <img class="profile-small" src="{%static 'images/profilepic.png'%}" alt="Avatar">
-
-                      {%endif%}
-                  </a>
-
-                  <ul class="dropdown-menu px-2" role="menu">
-                      <li class="nav-item">
-                          <a href="{%url 'signout'%}" class="nav-link scroll">Logout</a>
-                      </li>
-                  </ul>
-                  
-              </li>        
-          </ul>            
+            <ul class="dropdown-menu px-2" role="menu">
+              <li class="nav-item">
+                <a href="{% url 'signout' %}" class="nav-link scroll">Logout</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
       </div>
       <!-- profile dropdown end -->
-
-  </div>
-</nav>
-<!-- nav ends -->
-  
-<div class="container " style="margin-left: 106px;">
-  <div class="card mt-3 p-2" style="width: 1255px; height: 315px;">
-    
-    {%if data.profile_pic%}
-    <img src="{{data.profile_pic.url}}" class="card-img-top shadow border border-white" style="border-radius: 600px; height: 150px; width: 150px;"
-      alt="...">
-    {%else%}
-    <img src="{%static 'images/profilepic.png'%}" class="card-img-top shadow border border-white" style="border-radius: 600px; height: 150px; width: 150px;"
-    alt="...">
-    {%endif%}
-
-    <div class="card-body">
-      <h5 class="card-title">{{data.name}}</h5>
-      <p class="card-text">{{data.bio}}</p>
-      {%if data.user == request.user%}
-      <a href="{%url 'profile-update' data.id%}" class="btn btn-secondary text-dark fw-bold btn-sm" id="button1">Edit Profile</a>
-      {%endif%}
-
-      {%if data.user != request.user%}
-      {% if data.user.profile not in request.user.profile.block.all %}
-      <form action="{%url 'follow' data.id%}" method="post" class="followbtn btn btn-secondary text-dark fw-bold btn-sm">
-        {%csrf_token%}
-        {%if data in request.user.profile.following.all%}
-            <button type="submit" name="action" value="unfollow">Unfollow</button>
-        {%else%}
-            <button type="submit" name="action" value="follow">Follow</button>
-        {%endif%}
-      </form>
-      {%endif%}
-
-      
-      <form action="{%url 'block' data.id%}" method="post" class="blockbtn btn btn-secondary text-dark fw-bold btn-sm">
-        {%csrf_token%}
-        {%if data in request.user.profile.block.all%}
-           <button type="submit" name="action" value="unblock">Unblock</button>
-        {%else%}
-          <button type="submit" name="action" value="block">Block</button>
-        {%endif%}
-      </form>
-    
-      {%endif%}
     </div>
-    
-   <div class="count-container">
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item">
-        {%if data.user == request.user%}
-        <span id="countspace" class="fw-bold text-success"> {{data.user.userpost.all.count}}</span>
-        <span id="countspace" class="fw-bold text-info"> {{data.followed_by.count}}</span>         
-        <span id="countspace"class="fw-bold text-primary"> {{data.following.count}}</span>
-        <span id="countspace"class="fw-bold text-danger"> {{data.block.count}}</span> <br>
-        <span id="countspace2">Posts</span>
-        <span id="countspace2">Followers</span>
-        <span id="countspace2">Following</span>
-        <span id="countspace2">Blocked</span>
-        {%else%}
-        <span id="countspace" class="fw-bold text-success"> {{data.user.userpost.all.count}}</span>
-        <span id="countspace" class="fw-bold text-info"> {{data.followed_by.count}}</span>         
-        <span id="countspace"class="fw-bold text-primary"> {{data.following.count}}</span><br>
-        <span id="countspace2">Posts</span>
-        <span id="countspace2">Followers</span>
-        <span id="countspace2">Following</span>
-        {%endif%}
-      </li>     
-    </ul>
-   </div>
-  
-  </div>
-</div>
+  </nav>
+  <!-- nav ends -->
 
-<!-- Users Posts Start -->
-  <div class="container" style="margin-top: 10px;">
+  <div class="container">
+    <div class="card mt-3 p-4 shadow">
+      <div class="d-flex align-items-center">
+        {% if data.profile_pic %}
+        <img src="{{ data.profile_pic.url }}" class="card-img-top shadow border border-white" alt="...">
+        {% else %}
+        <img src="{% static 'images/profilepic.png' %}" class="card-img-top shadow border border-white" alt="...">
+        {% endif %}
+        <div class="ms-4">
+          <h5 class="card-title">{{ data.name }}</h5>
+          <p class="card-text">{{ data.bio }}</p>
+          {% if data.user == request.user %}
+          <a href="{% url 'profile-update' data.id %}" class="btn btn-secondary text-dark fw-bold btn-sm">Edit
+            Profile</a>
+          {% endif %}
+
+          {% if data.user != request.user %}
+          {% if data.user.profile not in request.user.profile.block.all %}
+          <form action="{% url 'follow' data.id %}" method="post"
+            class="followbtn btn btn-secondary text-dark fw-bold btn-sm">
+            {% csrf_token %}
+            {% if data in request.user.profile.following.all %}
+            <button type="submit" name="action" value="unfollow">Unfollow</button>
+            {% else %}
+            <button type="submit" name="action" value="follow">Follow</button>
+            {% endif %}
+          </form>
+          {% endif %}
+
+          <form action="{% url 'block' data.id %}" method="post"
+            class="blockbtn btn btn-secondary text-dark fw-bold btn-sm">
+            {% csrf_token %}
+            {% if data in request.user.profile.block.all %}
+            <button type="submit" name="action" value="unblock">Unblock</button>
+            {% else %}
+            <button type="submit" name="action" value="block">Block</button>
+            {% endif %}
+          </form>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="count-container mt-4 bg-light">
+        <div class="count-item">
+          <div class="count-number text-success">{{ data.user.userpost.all.count }}</div>
+          <div class="count-label">Posts</div>
+        </div>
+        <div class="count-item">
+          <div class="count-number text-info">{{ data.followed_by.count }}</div>
+          <div class="count-label">Followers</div>
+        </div>
+        <div class="count-item">
+          <div class="count-number text-primary">{{ data.following.count }}</div>
+          <div class="count-label">Following</div>
+        </div>
+        {% if data.user == request.user %}
+        <div class="count-item">
+          <div class="count-number text-danger">{{ data.block.count }}</div>
+          <div class="count-label">Blocked</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Users Posts Start -->
+  <div class="container mt-4">
     <div class="card text-center">
       <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs">
@@ -194,42 +247,33 @@
             <a class="nav-link active fw-bolder" aria-current="true" href="#">POSTS</a>
           </li>
 
-          <!--model start-->
-          {%if is_own_profile%}
+          <!-- model start -->
+          {% if is_own_profile %}
           <li>
-
-             <button class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal" id="postbtn">
               <i class="fa-regular fa-square-plus me-4 fs-3 text-danger opacity-75"></i>
-             </button>
-            
+            </button>
           </li>
-          {%endif%}
+          {% endif %}
+          <!-- model end -->
 
-          <!--model end-->
-          
         </ul>
       </div>
-      <div class="card-body" style="margin-top: -30px;">
-        <div class="mx-auto grid w-full max-w-7xl items-center space-y-4 px-2 py-10 md:grid-cols-2 md:gap-6 md:space-y-0 lg:grid-cols-4">
-          
-          {%for item in post%}
-          {%if item.content%}
-          <div class="relative aspect-[16/9]  w-auto rounded-md md:aspect-auto md:h-[400px]">
-            <a href="{%url 'profile-post' item.id%}"><img
-              src="{{item.content.url}}"
-              alt="userposts"
-              class="z-0 h-full w-full rounded-md object-cover"
-            /></a>
+      <div class="card-body">
+        <div class="post-grid">
+          {% for item in post %}
+          {% if item.content %}
+          <div class="post-item">
+            <a href="{% url 'profile-post' item.id %}">
+              <img src="{{ item.content.url }}" alt="userposts" class="img-fluid">
+            </a>
           </div>
-          {%endif%}
-          {%endfor%}
-
+          {% endif %}
+          {% endfor %}
         </div>
       </div>
-    
     </div>
   </div>
-
   <!-- Users Posts End -->
 
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -240,33 +284,25 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
-       <form action="{%url 'post-create'%}" method="post" enctype="multipart/form-data">
-
-        {%csrf_token%}
-
-        <div class="modal-body">
-            
+        <form action="{% url 'post-create' %}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="modal-body">
             <div class="mb-3">
-                <label for="">Title</label>
-                <input type="text" class="form-control" name="title">
+              <label for="">Title</label>
+              <input type="text" class="form-control" name="title">
             </div>
             <div class="mb-3">
-                <input type="file" class="form-control" name="content">
+              <input type="file" class="form-control" name="content">
             </div>
-
-        </div>
-
-        <div class="modal-footer">
+          </div>
+          <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary">Post</button>
-        </div>
-
+          </div>
         </form>
       </div>
     </div>
-</div>
-
-
-
+  </div>
 </body>
+
 </html>

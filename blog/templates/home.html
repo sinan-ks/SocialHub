@@ -196,24 +196,21 @@
     <!--stories start-->
 
     <!-- Display stories -->
-
-    <div class="d-flex  container w-50">
+    <div class="d-flex container w-50">
         {% for st in stories %}
         <div class="d-flex flex-column mt-2">
             <div class="story-preview me-2 d-flex align-items-center justify-content-center" data-toggle="modal"
                 data-target="#storyModal{{ st.id }}">
-
                 <!-- Display story preview -->
-                {%if st.post_content%}
+                {% if st.post_content %}
                 <img src="{{ st.post_content.url }}" alt="Story Image" style="width: 95px; height: 95px;"
                     class="border rounded-circle border-danger border-3">
-                {%else%}
-                <img src="{%static 'images/profilepic.png'%}" alt="Story Image" style="width: 95px; height: 95px;"
+                {% else %}
+                <img src="{% static 'images/profilepic.png' %}" alt="Story Image" style="width: 95px; height: 95px;"
                     class="border rounded-circle border-danger border-3">
-                {%endif%}
-
+                {% endif %}
             </div>
-            <div class="text-center fw-bolder">{{st.user}}</div>
+            <div class="text-center fw-bolder">{{ st.user }}</div>
 
             <!-- Modal -->
             <div class="modal fade" id="storyModal{{ st.id }}" tabindex="-1" role="dialog"
@@ -229,14 +226,24 @@
 
                         <div class="modal-body">
                             <!-- Display full story content -->
-                            {%if st.post_content%}
-                            <img src="{{ st.post_content.url }}" alt="Story Image" style="width: 460px; height:400 px;">
-                            {%endif%}
+                            {% if st.post_content %}
+                            <img src="{{ st.post_content.url }}" alt="Story Image" style="width: 460px; height: 400px;">
+                            {% endif %}
                             <!-- Add any other story details as needed -->
-                            {%if st.text_content != none%}
-                            <p class="fw-bolder p-2">{{st.text_content}}</p>
-                            {%endif%}
+                            {% if st.text_content %}
+                            <p class="fw-bolder p-2">{{ st.text_content }}</p>
+                            {% endif %}
                         </div>
+
+                        <!-- Delete button -->
+                        {% if request.user == st.user %}
+                        <div class="modal-footer">
+                            <form action="{% url 'story-delete' st.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                        {% endif %}
 
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
 from blog.forms import RegistrationForm, LoginForm, UserProfileForm, PostForm, CommentForm, StoryForm, UserSearchForm
 from django.contrib.auth import authenticate, login, logout
@@ -278,6 +278,20 @@ class StoryCreateView(View):
             form.instance.user = request.user
             form.save()
             return redirect('home')
+        return redirect('home')
+    
+
+@method_decorator(decs, name='dispatch')
+class StoryDeleteView(View):
+
+    def post(self, request, *args, **kwargs):
+        id = kwargs.get('pk')
+        story_object = get_object_or_404(Stories, id=id)
+
+        # Check if the user is authorized to delete the story
+        if request.user == story_object.user:
+            story_object.delete()
+
         return redirect('home')
     
 

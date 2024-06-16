@@ -1,0 +1,49 @@
+label,
+input,
+textarea {
+    margin-left: 180px;
+}
+
+form input[type="file"] {
+    display: none;
+    cursor: pointer;
+}
+
+.profilepic {
+    margin-left: 80px;
+    position: relative;
+    display: inline-block;
+}
+
+.icon {
+    position: absolute;
+    top: 110px;
+    right: 60px;
+    font-size: 20px;
+    color: #fff;
+    cursor: pointer;
+}
+
+img:hover,
+.icon:hover {
+    opacity: 75%;
+}
+
+.profile-small {
+    width: 40px;
+    border-radius: 50%;
+}
+
+nav {
+    background-color: #74EBD5;
+    background-image: linear-gradient(90deg, #74EBD5 0%, #9FACE6 100%);
+}
+
+body {
+    background: #f2f2f2;
+    font-family: 'Open Sans', sans-serif;
+}
+
+#navbarSupportedContent {
+    margin-left: 1200px;
+}

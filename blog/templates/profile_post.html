@@ -1,240 +1,215 @@
 <!DOCTYPE html>
 {%load static%}
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/profile_post.css' %}">
+</head>
+
+<body>
+
+    <!-- nav starts -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{%url 'home'%}">
+                <img src="{%static 'images/SocialHub Logo.png'%}" alt="Logo" width="100" height="h-auto">
+            </a>
+
+            <!-- profile dropdown start -->
+            <div id="navbarSupportedContent">
+
+                <ul style="margin-right: 120px;">
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            {%if request.user.profile.profile_pic%}
+                            <img class="profile-small" src="{{request.user.profile.profile_pic.url}}" alt="Avatar">
+
+                            {%else%}
+                            <img class="profile-small" src="{%static 'images/profilepic.png'%}" alt="Avatar">
+
+                            {%endif%}
+                        </a>
+
+                        <ul class="dropdown-menu px-2" role="menu">
+                            <li class="nav-item">
+                                <a href="{%url 'signout'%}" class="nav-link scroll">Logout</a>
+                            </li>
+                        </ul>
+
+                    </li>
+                </ul>
+            </div>
+            <!-- profile dropdown end -->
+
+        </div>
+    </nav>
+    <!-- nav ends -->
+
+    <!-- post section start -->
+
+    <div class="container d-flex flex-column justify-content-center align-items-center mt-4">
+        {%for post in data%}
+        <div class="border border-1 rounded-4 mt-4 w-50">
+
+            <div class="ms-2 mt-2 mb-2">
+                {%if post.user.profile.profile_pic%}
+                <img class="profile-small" src="{{post.user.profile.profile_pic.url}}" alt="Avatar">
+
+                {%else%}
+                <img class="profile-small" src="{%static 'images/profilepic.png'%}" alt="Avatar">
+
+                {%endif%}
+
+                <b>{{post.user}}</b>, {{post.created_date}}
+
+                {%if request.user == post.user%}
+                <li class="dropdown justify-content-end" id="post_head">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </a>
+
+                    <ul class="dropdown-menu px-2" role="menu">
+                        <li>
+                            <a class="nav-link scroll" href="{%url 'post-delete' post.id%}">Delete</a>
+                        </li>
+                    </ul>
+                </li>
+                {%endif%}
+
+            </div>
+
+            <div>
+                {%if post.content%}
+                <img src="{{post.content.url}}" class="h-auto w-100" alt="">
+
+                {%endif%}
+
+                <div class="m-3"><b>{{post.title}}</b></div>
+            </div>
+
+            <div class="ms-2 d-flex align-items-start">
+                <form action="{%url 'like' post.id%}" method="post">
+                    {%csrf_token%}
+                    {%if request.user in post.likes.all%}
+
+                    <div class="d-block flex-column">
+                        <div>
+                            <button type="submit" class="btn" name="action" value="unlike">
+                                <i class="fa-solid fa-heart fs-4 text-danger btn"></i>
+                            </button>
+                        </div>
+
+                    </div>
+
+                    {%else%}
+                    <div class="d-block flex-column">
+                        <div>
+                            <button type="submit" class="btn" name="action" value="like">
+                                <i class="fa-regular fa-heart fs-4 btn"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    {%endif%}
+                    <div>
+                        <span class="spa" id="likebtn">{{post.likes.all.count}} Likes</span>
+                    </div>
+
+
+                </form>
+
+                <div class="d-block flex-column p-2">
+                    <div>
+                        <i class="fa-regular fa-comment fs-4 btn"></i>
+                    </div>
+
+                    <div>
+                        <span class="spa" id="cmntbtn">{{post.post_comments.all.count}} Comments</span>
+                    </div>
+                </div>
+
+                <form action="{%url 'like' post.id%}" method="post">
+                    {%csrf_token%}
+                    {%if request.user in post.saves.all%}
+                    <div class="d-block flex-column">
+                        <div>
+                            <button type="submit" class="btn" name="action" value="unsave">
+                                <i class="fa-solid fa-bookmark fs-4 text-danger btn"></i>
+                            </button>
+                        </div>
+
+                        {%else%}
+                        <div class="d-block flex-column">
+                            <div>
+                                <button type="submit" class="btn" name="action" value="save">
+                                    <i class="fa-regular fa-bookmark fs-4 btn"></i>
+                                </button>
+                            </div>
+
+                            {%endif%}
+
+                            <div>
+                                <span class="spa" id="savebtn">{{post.saves.all.count}} Saves</span>
+                            </div>
+                        </div>
+                </form>
+            </div>
+            <hr class="ms-3 me-3">
+
+            {%for c in post.post_comments.all%}
+            <div class="p-1 ms-2">
+                <div class="p-1 ms-2">
+                    <div>
+                        {%if c.user.profile.profile_pic%}
+                        <img class="profile-xsmall" src="{{c.user.profile.profile_pic.url}}" alt=""> {{c.user.username}}
+                        {%else%}
+                        {{c.profile}}
+
+                        {%endif%}
+                    </div>
+                    <div class="ms-2 m-1 comment form-control rounded-end-0 border-0">
+                        <input type="text" name="" value="{{c.text}}" disabled placeholder="Type your comments..."
+                            class="border-0 w-100">
+                    </div>
+                </div>
+            </div>
+
+            {%endfor%}
+            <div class="p-3">
+                <div>
+                    <img class="profile-xsmall" src="images/profilepic.png" alt="">
+                </div>
+                <form action="{%url 'comment' post.id%}" method="post">
+                    {%csrf_token%}
+                    <div class="ms-2 m-1 comment form-control rounded-end-0 border-0">
+                        <input type="text" name="text" placeholder="Type your comments..." class="border-0 w-100">
+                    </div>
+                    <div>
+                        <button class="btn btn-secondary rounded-start-0 ms-2" type="submit">Post</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        {%endfor%}
+    </div>
+    <!-- post section end -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/252a556f38.js" crossorigin="anonymous"></script>
 
-    <style>
 
-    .profile-small{
-        width:40px;
-        border-radius: 50%;
-    
-    }
-
-    #post_head{
-        float: right;
-        list-style: none;  
-        margin: 10px;      
-    }
-
-    body{
-      background: #f2f2f2;
-      font-family: 'Open Sans', sans-serif;
-    }
-
-    nav{
-    background-color: #74EBD5;
-    background-image: linear-gradient(90deg, #74EBD5 0%, #9FACE6 100%);
-
-   }
-
-  li{
-    list-style-type: none;
-  }
- 
-    </style>
-</head>
-<body>
-
-<!-- nav starts -->
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{%url 'home'%}">
-            <img src="{%static 'images/SocialHub Logo.png'%}" alt="Logo" width="100" height="h-auto"
-            >
-        </a>
-  
-        <!-- profile dropdown start -->
-        <div id="navbarSupportedContent">
-            
-            <ul style="margin-right: 120px;">
-                
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        {%if request.user.profile.profile_pic%}
-                        <img class="profile-small" src="{{request.user.profile.profile_pic.url}}" alt="Avatar">
-  
-                        {%else%}
-                        <img class="profile-small" src="{%static 'images/profilepic.png'%}" alt="Avatar">
-  
-                        {%endif%}
-                    </a>
-  
-                    <ul class="dropdown-menu px-2" role="menu">
-                        <li class="nav-item">
-                            <a href="{%url 'signout'%}" class="nav-link scroll">Logout</a>
-                        </li>
-                    </ul>
-                    
-                </li>        
-            </ul>            
-        </div>
-        <!-- profile dropdown end -->
-  
-    </div>
-  </nav>
-  <!-- nav ends -->
-    
-    <!-- post section start -->
-
-    <div class="container d-flex flex-column justify-content-center align-items-center mt-4">
-    {%for post in data%}
-    <div class="border border-1 rounded-4 mt-4 w-50">
-
-        <div class="ms-2 mt-2 mb-2">
-            {%if post.user.profile.profile_pic%}
-            <img class="profile-small" src="{{post.user.profile.profile_pic.url}}" alt="Avatar">
-
-            {%else%}
-            <img class="profile-small" src="{%static 'images/profilepic.png'%}" alt="Avatar">
-
-            {%endif%}
-            
-            <b>{{post.user}}</b>,  {{post.created_date}} 
-
-            {%if request.user == post.user%}
-            <li class="dropdown justify-content-end"  id="post_head">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                </a>
-            
-                <ul class="dropdown-menu px-2" role="menu">
-                    <li>
-                        <a class="nav-link scroll" href="{%url 'post-delete' post.id%}">Delete</a>
-                    </li>
-                </ul>
-            </li> 
-            {%endif%}  
-
-        </div>
-
-        <div>
-            {%if post.content%}
-            <img src="{{post.content.url}}" class="h-auto w-100" alt="">
-
-            {%endif%}
-            
-            <div class="m-3"><b>{{post.title}}</b></div>
-        </div>
-
-        <div class="ms-2 d-flex align-items-start">
-            <form action="{%url 'like' post.id%}" method="post">
-                {%csrf_token%}
-                {%if request.user in post.likes.all%}
-
-                <div class="d-block flex-column">
-                    <div>
-                        <button type="submit" class="btn" name="action" value="unlike">
-                            <i class="fa-solid fa-heart fs-4 text-danger btn"></i>
-                        </button>
-                    </div>
-                    
-                </div>
-
-                {%else%}
-                <div class="d-block flex-column">
-                    <div>
-                        <button type="submit" class="btn" name="action" value="like">
-                            <i class="fa-regular fa-heart fs-4 btn"></i>
-                        </button>
-                    </div>
-                </div>
-                    
-                {%endif%}
-                <div>
-                    <span class="spa" id="likebtn">{{post.likes.all.count}} Likes</span>
-                </div>
-                
-
-            </form>
-
-            <div class="d-block flex-column p-2">
-                <div>
-                    <i class="fa-regular fa-comment fs-4 btn"></i>
-                </div>
-
-                <div>
-                    <span class="spa" id="cmntbtn">{{post.post_comments.all.count}} Comments</span>
-                </div>
-            </div>
-            
-            <form action="{%url 'like' post.id%}" method="post">
-                {%csrf_token%}
-                {%if request.user in post.saves.all%}
-            <div class="d-block flex-column">
-                <div>
-                    <button type="submit" class="btn" name="action" value="unsave">
-                        <i class="fa-solid fa-bookmark fs-4 text-danger btn"></i>
-                    </button>
-                </div>
-            
-                {%else%}
-            <div class="d-block flex-column">
-                <div>
-                    <button type="submit" class="btn" name="action" value="save">
-                        <i class="fa-regular fa-bookmark fs-4 btn"></i>
-                    </button>
-                </div>
-                    
-                {%endif%}
-
-                <div>
-                    <span class="spa" id="savebtn">{{post.saves.all.count}} Saves</span>
-                </div>
-            </div>
-            </form>
-        </div>
-        <hr class="ms-3 me-3">
-
-        {%for c in post.post_comments.all%}
-        <div class="p-1 ms-2">
-            <div class="p-1 ms-2">
-                <div>
-                    {%if c.user.profile.profile_pic%}
-                        <img class="profile-xsmall" src="{{c.user.profile.profile_pic.url}}" alt=""> {{c.user.username}}
-                    {%else%}
-                       {{c.profile}}
-
-                    {%endif%}
-                </div> 
-                <div class="ms-2 m-1 comment form-control rounded-end-0 border-0">
-                    <input type="text" name="" value="{{c.text}}" disabled placeholder="Type your comments..." class="border-0 w-100">
-                </div>
-            </div>
-        </div>
-
-        {%endfor%}
-        <div class="p-3">
-            <div>
-                <img class="profile-xsmall" src="images/profilepic.png" alt="">
-            </div>
-            <form action="{%url 'comment' post.id%}" method="post">
-                {%csrf_token%}
-                <div class="ms-2 m-1 comment form-control rounded-end-0 border-0">
-                    <input type="text" name="text"  placeholder="Type your comments..." class="border-0 w-100">
-                </div>
-                <div>
-                    <button class="btn btn-secondary rounded-start-0 ms-2" type="submit">Post</button>
-                </div>
-
-            </form>
-        </div>
-    </div>
-
-
-    {%endfor%}
-</div>
-    <!-- post section end -->
 </body>
+
 </html>

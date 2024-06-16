@@ -6,6 +6,7 @@ from django.db.models.signals import post_save
 # Create your models here.
 
 class UserProfile(models.Model):
+    
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     profile_pic = models.ImageField(upload_to="profile_pics",default="static/images/profilepic.png",null=True,blank=True)
     name = models.CharField(max_length=100, null=True)
@@ -24,6 +25,7 @@ class UserProfile(models.Model):
 
 
 class Posts(models.Model):
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="userpost")
     title = models.CharField(max_length=200)
     content = models.FileField(upload_to="posts", null=True, blank=True)
@@ -38,10 +40,10 @@ class Posts(models.Model):
     
 
 class Comments(models.Model):
+
     post = models.ForeignKey(Posts, on_delete=models.CASCADE, related_name="post_comments")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comment")
     text = models.CharField(max_length=200)
-    # comment_reply = models.ForeignKey('self',null=True, blank=True, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
@@ -50,10 +52,10 @@ class Comments(models.Model):
 
 
 class Stories(models.Model):
+
     user = models.ForeignKey(User, related_name="userstories", on_delete=models.CASCADE)
     post_content = models.FileField(upload_to="stories", null=True, blank=True)
-    text_content = models.CharField(max_length=200, null=True, blank=True)
-    # story_reply = models.TextField(null=True, blank=True)
+    text_content = models.CharField(max_length=200, null=True, blank=True)  
     created_date = models.DateTimeField(auto_now_add=True)
     expiry_date = models.DateTimeField()
     #exp = created_date + timezone.timedelta(days=1)
@@ -62,6 +64,7 @@ class Stories(models.Model):
         return self.user.username
     
     def save(self, *args, **kwargs):
+
         if not self.expiry_date:
             self.expiry_date = timezone.now()+timezone.timedelta(days=1)
         super().save(*args, **kwargs)
@@ -75,8 +78,10 @@ class Stories(models.Model):
 
 
 def create_profile(sender,instance,created,**kwargs):
+
     if created:
         UserProfile.objects.create(user=instance)
+
 post_save.connect(sender=User, receiver=create_profile)
 
 

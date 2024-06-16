@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
 from blog.forms import RegistrationForm, LoginForm, UserProfileForm, PostForm, CommentForm, StoryForm, UserSearchForm
 from django.contrib.auth import authenticate, login, logout
-from blog.models import Posts, UserProfile, Stories, User
+from blog.models import Posts, UserProfile, Stories, User, Comments
 from django.utils import timezone
 from django.urls import reverse
 from blog.decorators import signin_required
@@ -252,6 +252,21 @@ class CommentView(View):
            return redirect('home')
         
         return render(request, 'home.html', {'form':form})
+
+
+@method_decorator(decs, name='dispatch')
+class CommentDeleteView(View):
+    
+    def post(self, request, *args, **kwargs):
+        comment_id = kwargs.get('comment_id')  # Fetching comment_id from URL kwargs
+        comment = get_object_or_404(Comments, id=comment_id)
+        
+        # Check if the logged-in user is the owner of the comment
+        if request.user == comment.user:
+            comment.delete()
+        
+        # Redirect to the homepage after deleting the comment
+        return redirect('home')
     
 
 #url: localhost:8000/post/{id}/remove/

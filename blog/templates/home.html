@@ -402,25 +402,39 @@
             </div>
             <hr class="ms-3 me-3">
 
-            {%for c in post.post_comments.all%}
+            {% for c in post.post_comments.all %}
             <div class="p-1 ms-2">
                 <div class="p-1 ms-2">
                     <div>
-                        {%if c.user.profile.profile_pic%}
-                        <img class="profile-xsmall" src="{{c.user.profile.profile_pic.url}}" alt=""> {{c.user.username}}
-                        {%else%}
-                        {{c.profile}}
-
-                        {%endif%}
+                        {% if c.user.profile.profile_pic %}
+                        <img class="profile-xsmall" src="{{ c.user.profile.profile_pic.url }}" alt=""> {{
+                        c.user.username }}
+                        {% else %}
+                        {{ c.profile }}
+                        {% endif %}
                     </div>
                     <div class="ms-2 m-1 comment form-control rounded-end-0 border-0">
-                        <input type="text" name="" value="{{c.text}}" disabled placeholder="Type your comments..."
+                        <input type="text" name="" value="{{ c.text }}" disabled placeholder="Type your comments..."
                             class="border-0 w-100">
+                        {% if request.user == c.user %}
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                id="dropdownMenuButton{{ c.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                Actions
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ c.id }}">
+                                <form action="{% url 'comment-delete' post.id c.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item">Delete</button>
+                                </form>
+                            </ul>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
+            {% endfor %}
 
-            {%endfor%}
             <div class="p-3">
                 <div>
                     <img class="profile-xsmall" src="images/profilepic.png" alt="">

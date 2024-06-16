@@ -16,9 +16,10 @@ urlpatterns = [
     path("profiles/<int:pk>/posts/", views.ProfilePostview.as_view(), name="profile-post"),
     path("post/<int:pk>/like/", views.PostLikeView.as_view(), name="like"),
     path("post/<int:pk>/comments/add/", views.CommentView.as_view(), name="comment"),
+    path("post/<int:post_id>/comments/<int:comment_id>/remove/", views.CommentDeleteView.as_view(), name='comment-delete'),
     path("post/<int:pk>/remove/", views.PostDeleteView.as_view(), name="post-delete"),
     path("stories/add/", views.StoryCreateView.as_view(), name="story-create"),
-    path('stories/<int:pk>/remove/', views.StoryDeleteView.as_view(), name='story-delete'),
+    path("stories/<int:pk>/remove/", views.StoryDeleteView.as_view(), name="story-delete"),
     path("profiles/posts/add/", views.PostCreateView.as_view(), name="post-create"),
     path("search/", views.SearchView.as_view(), name="search"),   
     
